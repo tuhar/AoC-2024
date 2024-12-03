@@ -6,63 +6,72 @@
 #include <filesystem>
 #include <map>
 #include <numeric>
-#include <regex>
 #include <string>
 #include <sstream>
 #include <vector>
 #include <fstream>
 #include <days.hpp>
 
+/**
+ * --- Day 2: Red-Nosed Reports ---
 
-void load_input(std::vector<int>& list1, std::vector<int>& list2) {
-    std::ifstream file("../input/day_1_input.txt");
-    std::string line;
+Fortunately, the first location The Historians want to search isn't a long walk from the Chief Historian's office.
 
-    if (file.is_open()) {
-        while(getline(file, line)) {
-            std::istringstream iss(line);
-            int num1,num2;
-            if (iss >> num1 >> num2) {
-                list1.push_back(num1);
-                list2.push_back(num2);
-            } else {
-                std::cerr << "Could not extract numbers from list" << std::endl;
-            }
-        }
-        file.close();
-    } else {
-        std::cerr << "Could not open the input" << std::endl;
-    }
-}
+While the Red-Nosed Reindeer nuclear fusion/fission plant appears to contain no sign of the Chief Historian, the engineers there run up to you as soon as they see you. Apparently, they still talk about the time Rudolph was saved through molecular synthesis from a single electron.
 
-void day_1() {
+They're quick to add that - since you're already here - they'd really appreciate your help analyzing some unusual data from the Red-Nosed reactor. You turn to check if The Historians are waiting for you, but they seem to have already divided into groups that are currently searching every corner of the facility. You offer to help with the unusual data.
 
-    std::vector<int> list1;
-    std::vector<int> list2;
-    load_input(list1, list2);
+The unusual data (your puzzle input) consists of many reports, one report per line. Each report is a list of numbers called levels that are separated by spaces. For example:
 
-    std::stable_sort(list1.begin(), list1.end());
-    std::stable_sort(list2.begin(), list2.end());
+7 6 4 2 1
+1 2 7 8 9
+9 7 6 2 1
+1 3 2 4 5
+8 6 4 4 1
+1 3 6 7 9
 
-    std::vector<int>results;
+This example data contains six reports each containing five levels.
 
-    int result = std::accumulate(list1.begin(), list1.end(), 0, [&, i=0](int acc, int a) mutable {
-                                                       int b = list2[i++];
-                                                       return acc + abs(a -b);
-    });
+The engineers are trying to figure out which reports are safe. The Red-Nosed reactor safety systems can only tolerate levels that are either gradually increasing or gradually decreasing. So, a report only counts as safe if both of the following are true:
 
-    std::map<int, int> groupedBy;
-    for (int item : list2) {
-        groupedBy[item]++;
-    }
-    int bonusResult = std::accumulate(list1.begin(), list1.end(), 0, [&](int acc, int a) mutable {
-        return acc + (groupedBy[a] * a);
-    });
+    The levels are either all increasing or all decreasing.
+    Any two adjacent levels differ by at least one and at most three.
 
+In the example above, the reports can be found safe or unsafe by checking those rules:
 
-    std::cout << "Day 1 Part 1: " << result << std::endl;
-    std::cout << "Day 1 Part 2: " << bonusResult << std::endl;
-}
+    7 6 4 2 1: Safe because the levels are all decreasing by 1 or 2.
+    1 2 7 8 9: Unsafe because 2 7 is an increase of 5.
+    9 7 6 2 1: Unsafe because 6 2 is a decrease of 4.
+    1 3 2 4 5: Unsafe because 1 3 is increasing but 3 2 is decreasing.
+    8 6 4 4 1: Unsafe because 4 4 is neither an increase or a decrease.
+    1 3 6 7 9: Safe because the levels are all increasing by 1, 2, or 3.
+
+So, in this example, 2 reports are safe.
+
+Analyze the unusual data from the engineers. How many reports are safe?
+
+--- Part Two ---
+
+The engineers are surprised by the low number of safe reports until they realize they forgot to tell you about the Problem Dampener.
+
+The Problem Dampener is a reactor-mounted module that lets the reactor safety systems tolerate a single bad level in what would otherwise be a safe report. It's like the bad level never happened!
+
+Now, the same rules apply as before, except if removing a single level from an unsafe report would make it safe, the report instead counts as safe.
+
+More of the above example's reports are now safe:
+
+    7 6 4 2 1: Safe without removing any level.
+    1 2 7 8 9: Unsafe regardless of which level is removed.
+    9 7 6 2 1: Unsafe regardless of which level is removed.
+    1 3 2 4 5: Safe by removing the second level, 3.
+    8 6 4 4 1: Safe by removing the third level, 4.
+    1 3 6 7 9: Safe without removing any level.
+
+Thanks to the Problem Dampener, 4 reports are actually safe!
+
+Update your analysis by handling situations where the Problem Dampener can remove a single level from unsafe reports. How many reports are now safe?
+
+ */
 
 bool check_unsafe(const int previous, const int current, const int streak) {
     int difference = previous - current;
@@ -150,64 +159,4 @@ void day_2() {
     } else {
         std::cerr << "Could not open the input" << std::endl;
     }
-}
-
-void day_3() {
-    std::ifstream file("../input/day_3_input.txt");
-    std::regex expression("mul\\((\\d{1,3}),(\\d{1,3})\\)+");
-    std::regex conditionExpression(".*(do\\(\\))|.*(don't\\(\\))|.*(mul\\((\\d{1,3}),(\\d{1,3})\\))");
-    std::string line;
-    std::uint64_t result = 0;
-    std::uint64_t bonus_result = 0;
-    if (file.is_open()) {
-        std::cout << "We have a file" << std::endl;
-
-        char c;
-        std::string word = "";
-        bool executing = true;
-        while(file.get(c)) {
-            word += c;
-            if (c == ')') {
-                std::cout << "Found instruction: " << word << std::endl;
-                std::smatch base_match;
-                std::regex_match(word, base_match, conditionExpression);
-                if (base_match[1].matched) {
-                    std::cout << "Found do: " << std::endl;
-                    executing = true;
-                } else if (base_match[2].matched) {
-                    std::cout << "Found dont " << std::endl;
-                    executing = false;
-                } else if (base_match[3].matched) {
-                    std::cout << "Found mul: " << std::endl;
-                    if (executing) {
-                        std::cout << "we gut: " << std::endl;
-                        int first = std::stoi(base_match.str(4));
-                        int second = std::stoi(base_match.str(5));
-                        bonus_result += first * second;
-                    } else {
-                        std::cout << "we not gut: " << std::endl;
-                    }
-                }
-                word = "";
-            }
-        }
-
-        while(getline(file, line)) {
-            std::cout << "We have a line" << std::endl;
-            auto words_begin = std::sregex_iterator(line.begin(), line.end(), expression);
-            auto words_end = std::sregex_iterator();
-            for(std::sregex_iterator i = words_begin; i != words_end; i++) {
-                std::smatch match = *i;
-                std::string match_str = match.str();
-                int first = std::stoi(match.str(1));
-                int second = std::stoi(match.str(2));
-                std::cout << match_str << " first: " << first << " second: " << second << " multiple: " << first * second << std::endl;
-                result += first * second;
-            }
-        }
-    } else {
-        std::cout << "We ded" << std::endl;
-        std::cerr << "Could not open the input" << std::endl;
-    }
-    std::cout << "Day 3 Part 1: " << result << " Part 2: " << bonus_result << std:: endl;
 }

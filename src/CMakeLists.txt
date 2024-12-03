@@ -1,4 +1,4 @@
-add_library(AdventOfCode2024 days.cpp days.hpp)
+add_library(AdventOfCode2024 day_1.cpp day_2.cpp day_3.cpp days.hpp)
 target_include_directories(AdventOfCode2024 PUBLIC ../src)
 target_compile_features(AdventOfCode2024 PUBLIC cxx_std_20)
 
