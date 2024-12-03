@@ -79,13 +79,13 @@ bool check_unsafe(const int previous, const int current, const int streak) {
 }
 
 void day_2() {
-//    std::ifstream file("../input/day_2_input.txt");
+    //    std::ifstream file("../input/day_2_input.txt");
     std::ifstream file("../input/day_2_debug.txt");
-//    std::ifstream file("../input/day_2_small_debug.txt");
+    //    std::ifstream file("../input/day_2_small_debug.txt");
     std::string line;
     int safeCounter = 0;
     if (file.is_open()) {
-        while(getline(file, line)) {
+        while (getline(file, line)) {
             std::istringstream iss(line);
             int previous = -1;
             bool unsafe = false;
@@ -98,19 +98,19 @@ void day_2() {
             int previousUnsafeStreak = 0;
             int currentUnsafe = -1;
             int currentUnsafeStreak = 0;
-            for(int current; iss >> current;) {
+            for (int current; iss >> current;) {
                 if (previous < 0) {
                     previous = current;
                 } else {
                     if (previousUnResolved) { //part 2
-//                        std::cout << "pu: " << previousUnsafe << ", cu: " << currentUnsafe << ", streak: " << streak << ", pUs: " << previousUnsafeStreak << ", cUs: " << currentUnsafeStreak << std::endl;
+                                              //                        std::cout << "pu: " << previousUnsafe << ", cu: " << currentUnsafe << ", streak: " << streak << ", pUs: " << previousUnsafeStreak << ", cUs: " << currentUnsafeStreak << std::endl;
                         bool previousSafe = check_unsafe(previousUnsafe, current, previousUnsafeStreak);
                         bool currentSafe = check_unsafe(currentUnsafe, current, currentUnsafeStreak);
                         bool firstSafe = check_unsafe(previousUnsafe, currentUnsafe, previousUnsafe - currentUnsafe);
-//                        std::cout << "perS: " << previousSafe << ", curS: " << currentSafe << std::endl;
+                        //                        std::cout << "perS: " << previousSafe << ", curS: " << currentSafe << std::endl;
                         if (!previous && !currentUnsafe && !firstSafe) {
                             unsafe = true;
-//                            std::cout << "unsafe level : " << line << std::endl;
+                            //                            std::cout << "unsafe level : " << line << std::endl;
                             break;
                         }
                         if (previousSafe) {
@@ -122,11 +122,11 @@ void day_2() {
                         }
                         previous = current;
                         previousUnResolved = false;
-//                        std::cout << "p: "<< previous << ", c: "<< current << ", pu: " << previousUnsafe << ", cu: " << currentUnsafe << ", streak: " << streak << std::endl;
+                        //                        std::cout << "p: "<< previous << ", c: "<< current << ", pu: " << previousUnsafe << ", cu: " << currentUnsafe << ", streak: " << streak << std::endl;
                     } else {
-//                        std::cout << "p: "<< previous << ", c: "<< current << ", pu: " << previousUnsafe << ", cu: " << currentUnsafe << ", streak: " << streak << std::endl;
+                        //                        std::cout << "p: "<< previous << ", c: "<< current << ", pu: " << previousUnsafe << ", cu: " << currentUnsafe << ", streak: " << streak << std::endl;
                         unsafe = check_unsafe(previous, current, streak);
-//                        std::cout << "unsafe: " << unsafe << std::endl;
+                        //                        std::cout << "unsafe: " << unsafe << std::endl;
                         if (unsafe) {
                             if (safeIgnore > 0) { //part 2
                                 unsafe = false;
@@ -139,7 +139,7 @@ void day_2() {
                                 currentUnsafe = current;
                                 currentUnsafeStreak = (previous + streak) - current;
                             } else {
-//                                std::cout << "unsafe level : " << line << std::endl;
+                                //                                std::cout << "unsafe level : " << line << std::endl;
                                 break;
                             }
                         } else {
@@ -150,7 +150,7 @@ void day_2() {
                 }
             }
             if (!unsafe) {
-//                std::cout << "safe level : " << line << std::endl;
+                //                std::cout << "safe level : " << line << std::endl;
                 safeCounter++;
             }
         }

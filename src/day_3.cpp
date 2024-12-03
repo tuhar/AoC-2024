@@ -26,15 +26,15 @@ Scan the corrupted memory for uncorrupted mul instructions. What do you get if y
 
  */
 
-int part_1(std::ifstream& fileStream) {
+int part_1(std::ifstream &fileStream) {
     std::regex expression("mul\\((\\d{1,3}),(\\d{1,3})\\)+");
     int result = 0;
     std::string line;
 
-    while(getline(fileStream, line)) {
+    while (getline(fileStream, line)) {
         auto words_begin = std::sregex_iterator(line.begin(), line.end(), expression);
         auto words_end = std::sregex_iterator();
-        for(std::sregex_iterator i = words_begin; i != words_end; i++) {
+        for (std::sregex_iterator i = words_begin; i != words_end; i++) {
             std::smatch match = *i;
             std::string match_str = match.str();
             int first = std::stoi(match.str(1));
@@ -66,13 +66,13 @@ This time, the sum of the results is 48 (2*4 + 8*5).
 Handle the new instructions; what do you get if you add up all of the results of just the enabled multiplications?
  */
 
-int part_2(std::ifstream& fileStream) {
+int part_2(std::ifstream &fileStream) {
     std::regex conditionExpression(".*(do\\(\\))|.*(don't\\(\\))|.*(mul\\((\\d{1,3}),(\\d{1,3})\\))");
     int result = 0;
     char c;
     std::string word = "";
     bool executing = true;
-    while(fileStream.get(c)) {
+    while (fileStream.get(c)) {
         word += c;
         if (c == ')') {
             std::smatch base_match;
@@ -107,5 +107,5 @@ void day_3() {
         std::cout << "We ded" << std::endl;
         std::cerr << "Could not open the input" << std::endl;
     }
-    std::cout << "Day 3 Part 1: " << result << " Part 2: " << bonusResult << std:: endl;
+    std::cout << "Day 3 Part 1: " << result << " Part 2: " << bonusResult << std::endl;
 }
