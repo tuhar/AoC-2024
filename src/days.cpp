@@ -155,10 +155,43 @@ void day_2() {
 void day_3() {
     std::ifstream file("../input/day_3_input.txt");
     std::regex expression("mul\\((\\d{1,3}),(\\d{1,3})\\)+");
+    std::regex conditionExpression(".*(do\\(\\))|.*(don't\\(\\))|.*(mul\\((\\d{1,3}),(\\d{1,3})\\))");
     std::string line;
     std::uint64_t result = 0;
+    std::uint64_t bonus_result = 0;
     if (file.is_open()) {
         std::cout << "We have a file" << std::endl;
+
+        char c;
+        std::string word = "";
+        bool executing = true;
+        while(file.get(c)) {
+            word += c;
+            if (c == ')') {
+                std::cout << "Found instruction: " << word << std::endl;
+                std::smatch base_match;
+                std::regex_match(word, base_match, conditionExpression);
+                if (base_match[1].matched) {
+                    std::cout << "Found do: " << std::endl;
+                    executing = true;
+                } else if (base_match[2].matched) {
+                    std::cout << "Found dont " << std::endl;
+                    executing = false;
+                } else if (base_match[3].matched) {
+                    std::cout << "Found mul: " << std::endl;
+                    if (executing) {
+                        std::cout << "we gut: " << std::endl;
+                        int first = std::stoi(base_match.str(4));
+                        int second = std::stoi(base_match.str(5));
+                        bonus_result += first * second;
+                    } else {
+                        std::cout << "we not gut: " << std::endl;
+                    }
+                }
+                word = "";
+            }
+        }
+
         while(getline(file, line)) {
             std::cout << "We have a line" << std::endl;
             auto words_begin = std::sregex_iterator(line.begin(), line.end(), expression);
@@ -176,5 +209,5 @@ void day_3() {
         std::cout << "We ded" << std::endl;
         std::cerr << "Could not open the input" << std::endl;
     }
-    std::cout << "Day 3 Part 1: " << result << std:: endl;
+    std::cout << "Day 3 Part 1: " << result << " Part 2: " << bonus_result << std:: endl;
 }
