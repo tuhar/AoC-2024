@@ -1,10 +1,12 @@
 #include <algorithm>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <filesystem>
 #include <map>
 #include <numeric>
+#include <regex>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -99,7 +101,7 @@ void day_2() {
 //                        std::cout << "perS: " << previousSafe << ", curS: " << currentSafe << std::endl;
                         if (!previous && !currentUnsafe && !firstSafe) {
                             unsafe = true;
-                            std::cout << "unsafe level : " << line << std::endl;
+//                            std::cout << "unsafe level : " << line << std::endl;
                             break;
                         }
                         if (previousSafe) {
@@ -128,7 +130,7 @@ void day_2() {
                                 currentUnsafe = current;
                                 currentUnsafeStreak = (previous + streak) - current;
                             } else {
-                                std::cout << "unsafe level : " << line << std::endl;
+//                                std::cout << "unsafe level : " << line << std::endl;
                                 break;
                             }
                         } else {
@@ -139,7 +141,7 @@ void day_2() {
                 }
             }
             if (!unsafe) {
-                std::cout << "safe level : " << line << std::endl;
+//                std::cout << "safe level : " << line << std::endl;
                 safeCounter++;
             }
         }
@@ -148,4 +150,31 @@ void day_2() {
     } else {
         std::cerr << "Could not open the input" << std::endl;
     }
+}
+
+void day_3() {
+    std::ifstream file("../input/day_3_input.txt");
+    std::regex expression("mul\\((\\d{1,3}),(\\d{1,3})\\)+");
+    std::string line;
+    std::uint64_t result = 0;
+    if (file.is_open()) {
+        std::cout << "We have a file" << std::endl;
+        while(getline(file, line)) {
+            std::cout << "We have a line" << std::endl;
+            auto words_begin = std::sregex_iterator(line.begin(), line.end(), expression);
+            auto words_end = std::sregex_iterator();
+            for(std::sregex_iterator i = words_begin; i != words_end; i++) {
+                std::smatch match = *i;
+                std::string match_str = match.str();
+                int first = std::stoi(match.str(1));
+                int second = std::stoi(match.str(2));
+                std::cout << match_str << " first: " << first << " second: " << second << " multiple: " << first * second << std::endl;
+                result += first * second;
+            }
+        }
+    } else {
+        std::cout << "We ded" << std::endl;
+        std::cerr << "Could not open the input" << std::endl;
+    }
+    std::cout << "Day 3 Part 1: " << result << std:: endl;
 }
