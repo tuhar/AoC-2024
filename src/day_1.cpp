@@ -74,7 +74,7 @@ Your actual left and right lists contain many location IDs. What is the total di
 
  */
 
-int part_1(std::vector<int> &list1, std::vector<int> &list2) {
+int day_1_part_1(std::vector<int> &list1, std::vector<int> &list2) {
     std::stable_sort(list1.begin(), list1.end());
     std::stable_sort(list2.begin(), list2.end());
 
@@ -121,7 +121,7 @@ Once again consider your left and right lists. What is their similarity score?
 
  */
 
-int part_2(std::vector<int> &list1, std::vector<int> &list2) {
+int day_1_part_2(std::vector<int> &list1, std::vector<int> &list2) {
     std::map<int, int> groupedBy;
     for (int item : list2) {
         groupedBy[item]++;
@@ -135,7 +135,7 @@ void day_1() {
     std::vector<int> list1;
     std::vector<int> list2;
     load_input(list1, list2);
-    int result = part_1(list1, list2);
-    int bonusResult = part_2(list1, list2);
+    int result = day_1_part_1(list1, list2);
+    int bonusResult = day_1_part_2(list1, list2);
     std::cout << "Day 1 Part 1: " << result << " Part 2: " << bonusResult << std::endl;
 }

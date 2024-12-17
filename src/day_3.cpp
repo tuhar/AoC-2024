@@ -26,7 +26,7 @@ Scan the corrupted memory for uncorrupted mul instructions. What do you get if y
 
  */
 
-int part_1(std::ifstream &fileStream) {
+int day_3_part_1(std::ifstream &fileStream) {
     std::regex expression("mul\\((\\d{1,3}),(\\d{1,3})\\)+");
     int result = 0;
     std::string line;
@@ -66,7 +66,7 @@ This time, the sum of the results is 48 (2*4 + 8*5).
 Handle the new instructions; what do you get if you add up all of the results of just the enabled multiplications?
  */
 
-int part_2(std::ifstream &fileStream) {
+int day_3_part_2(std::ifstream &fileStream) {
     std::regex conditionExpression(".*(do\\(\\))|.*(don't\\(\\))|.*(mul\\((\\d{1,3}),(\\d{1,3})\\))");
     int result = 0;
     char c;
@@ -99,10 +99,10 @@ void day_3() {
     int result = 0;
     int bonusResult = 0;
     if (file.is_open()) {
-        result = part_1(file);
+        result = day_3_part_1(file);
         file.clear();
         file.seekg(0, std::ios::beg);
-        bonusResult = part_2(file);
+        bonusResult = day_3_part_2(file);
     } else {
         std::cout << "We ded" << std::endl;
         std::cerr << "Could not open the input" << std::endl;
